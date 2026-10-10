@@ -1,0 +1,40 @@
+Sobol analysis: N_base=512, 5120 model runs, 200 simulated years per run, 20-yr life, solar-hours schedule, no battery
+
+opt_kwp: mean 1.92, P5 1.00, P95 3.00
+  input                    S1     ±     ST     ±
+  load_scale            0.363 0.071  0.446 0.051
+  offset_rule           0.256 0.059  0.315 0.046
+  aircon                0.278 0.060  0.308 0.045
+  export_credit_mult    0.091 0.041  0.107 0.015
+  discount_rate         0.029 0.027  0.044 0.011
+  capex_per_kwp         0.015 0.021  0.028 0.008
+  tariff_escalation     0.002 0.015  0.023 0.008
+  degradation           0.005 0.016  0.016 0.006
+  sum S1 = 1.04 (1 − sum S1 ≈ share from interactions)
+
+  optimal size distribution: 1.0 kWp 11%, 1.5 kWp 35%, 2.0 kWp 29%, 2.5 kWp 15%, 3.0 kWp 6%, 3.5 kWp 4%, 4.0 kWp 0%
+
+npv_benefit: mean 147,409.34, P5 64,297.73, P95 268,187.30
+  input                    S1     ±     ST     ±
+  discount_rate         0.343 0.072  0.395 0.059
+  load_scale            0.219 0.053  0.241 0.039
+  tariff_escalation     0.164 0.049  0.186 0.031
+  offset_rule           0.078 0.037  0.093 0.012
+  aircon                0.057 0.033  0.089 0.017
+  capex_per_kwp         0.048 0.026  0.050 0.009
+  export_credit_mult    0.005 0.014  0.013 0.002
+  degradation          -0.000 0.003  0.000 0.000
+  sum S1 = 0.91 (1 − sum S1 ≈ share from interactions)
+
+bill_cut_pct: mean 86.64, P5 71.29, P95 99.74
+  input                    S1     ±     ST     ±
+  offset_rule           0.957 0.078  0.988 0.084
+  load_scale            0.011 0.024  0.039 0.008
+  discount_rate         0.020 0.027  0.035 0.012
+  export_credit_mult   -0.000 0.023  0.031 0.006
+  aircon                0.014 0.021  0.026 0.005
+  capex_per_kwp         0.003 0.019  0.018 0.007
+  tariff_escalation     0.008 0.017  0.016 0.007
+  degradation           0.010 0.011  0.009 0.004
+  sum S1 = 1.02 (1 − sum S1 ≈ share from interactions)
+

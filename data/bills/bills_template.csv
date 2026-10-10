@@ -1,0 +1,2 @@
+household_id,year,month,kwh,pesos,aircon,pv_kwp,import_kwh,export_kwh
+example_home,2026,9,220,2650,0,0,,

@@ -1,0 +1,12 @@
+name,class,count,rated_w,kwh_per_use,uses_per_week,default_hour,earliest_hour,latest_hour,notes
+refrigerator,fixed,1,,1.10,7,,,,kWh per day at 27 C ambient; +3%/C (compressor duty)
+standby_router_chargers,fixed,1,25,,,,,,continuous
+led_lighting,occupancy,6,9,,,,,,on when occupants active and dark (18:00-06:00); 60% of bulbs
+night_light,occupancy,1,9,,,,,,on while asleep
+television,occupancy,1,80,,,,,,evening 18-22 when active (p=0.8); daytime p=0.3
+rice_cooker,cooking,1,500,0.25,21,,,,three meals: 05h p=0.9; 10h p=0.7; 17h p=0.9
+electric_fan,thermostatic,3,55,,,,,,awake: fans on = clip((T-25)/2; 0; count); asleep: 1-2 fans if T>25
+aircon_inverter_1hp,thermostatic,1,750,,,,,,owned per scenario (default no); runs 21-05 if T at 21:00 >= 26.5; duty clip((T-23)/5; 0.4; 1)
+washing_machine,shiftable,1,400,0.40,3,8,6,20,days Wed/Sat/Sun
+water_pump,shiftable,1,370,0.50,7,6,5,19,daily household water pumping
+flat_iron,shiftable,1,1000,1.00,1,9,7,20,Sunday

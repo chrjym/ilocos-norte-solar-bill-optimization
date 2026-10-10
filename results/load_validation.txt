@@ -1,0 +1,27 @@
+Temperature, monthly means — NASA / synthetic (°C):
+       Tmean        Tmax         DTR      corr(Tmean,kt)
+  Jan  23.7/23.7  27.9/27.2   6.9/ 6.9  +0.32/+0.32
+  Feb  24.7/24.7  29.6/28.8   8.2/ 8.2  +0.37/+0.38
+  Mar  26.5/26.5  31.7/31.0   9.0/ 8.9  +0.44/+0.43
+  Apr  28.4/28.4  33.5/32.8   8.8/ 8.7  +0.49/+0.49
+  May  28.5/28.5  32.2/31.7   6.4/ 6.4  +0.64/+0.64
+  Jun  27.5/27.5  30.1/29.7   4.6/ 4.6  +0.48/+0.48
+  Jul  27.0/27.0  29.3/29.0   4.0/ 4.0  +0.51/+0.52
+  Aug  26.5/26.6  28.5/28.4   3.5/ 3.6  +0.51/+0.50
+  Sep  26.5/26.5  28.9/28.6   4.2/ 4.2  +0.50/+0.50
+  Oct  26.1/26.1  29.2/28.7   5.2/ 5.2  +0.06/+0.06
+  Nov  25.7/25.7  28.9/28.3   5.4/ 5.4  +0.31/+0.31
+  Dec  24.3/24.4  27.8/27.2   5.7/ 5.7  +0.29/+0.30
+  daily Tmean anomaly std: NASA 1.27  synthetic 1.27
+
+Load, no aircon: 1,663 kWh/yr (P10 1,636, P90 1,691); 139 kWh/month avg
+  end use: refrigerator 393 (24%), standby 219 (13%), lighting 73 (4%), television 164 (10%), rice_cooker 228 (14%), fans 289 (17%), shiftable 297 (18%)
+  kWh/month: Jan 120 Feb 117 Mar 147 Apr 161 May 169 Jun 147 Jul 145 Aug 140 Sep 134 Oct 135 Nov 127 Dec 122
+  share of load 06–18h: 60%
+  corr(daytime load, PV) within month, daily: +0.17
+
+Load, with aircon: 2,218 kWh/yr (P10 2,139, P90 2,308); 185 kWh/month avg
+  end use: refrigerator 393 (18%), standby 219 (10%), lighting 73 (3%), television 164 (7%), rice_cooker 228 (10%), fans 230 (10%), aircon 614 (28%), shiftable 297 (13%)
+  kWh/month: Jan 125 Feb 130 Mar 194 Apr 245 May 263 Jun 226 Jul 213 Aug 191 Sep 181 Oct 169 Nov 149 Dec 130
+  share of load 06–18h: 45%
+  corr(daytime load, PV) within month, daily: +0.17

@@ -1,0 +1,42 @@
+Historical: 24 years (Batac, NASA POWER). Synthetic: 2000 years each.
+
+KS test, monthly-mean kt (stat, p):
+  mk_mon dry: D=0.060  p=0.668
+  mk_mon wet: D=0.052  p=0.818
+  mk_nop dry: D=0.060  p=0.661
+  mk_nop wet: D=0.056  p=0.748
+  mk_sea dry: D=0.142  p=0.00589
+  mk_sea wet: D=0.050  p=0.853
+  iid    dry: D=0.135  p=0.0101
+  iid    wet: D=0.116  p=0.0404
+
+Monthly mean kt bias vs history (%):  mk_mon / mk_sea
+  Jan hist 0.556   +0.7%   +2.8%
+  Feb hist 0.590   +0.0%   -3.4%
+  Mar hist 0.608   -0.1%   -5.8%
+  Apr hist 0.613   -0.1%   -7.1%
+  May hist 0.561   -0.5%   -7.8%
+  Jun hist 0.536   +0.4%   -3.8%
+  Jul hist 0.505   -0.0%   +2.1%
+  Aug hist 0.464   +0.2%  +10.5%
+  Sep hist 0.497   +0.6%   +3.4%
+  Oct hist 0.527   +0.0%   -2.3%
+  Nov hist 0.540   +0.2%   +5.4%
+  Dec hist 0.515   -0.1%  +10.9%
+
+Std of monthly-mean kt (inter-month variability):
+  history 0.0433  mk_mon 0.0403  mk_nop 0.0402  mk_sea 0.0440  iid 0.0221
+
+ACF of daily kt, lags 1–5:
+  history 0.637 0.408 0.307 0.252 0.203
+  mk_mon  0.565 0.370 0.261 0.196 0.157
+  mk_nop  0.560 0.370 0.261 0.196 0.158
+  mk_sea  0.560 0.355 0.234 0.159 0.112
+  iid     0.104 0.106 0.104 0.102 0.103
+
+Cloudy-spell run lengths (states 0–1):
+  history mean 2.73 d, P95 8 d, max 24 d
+  mk_mon  mean 2.72 d, P95 8 d, max 33 d | KS D=0.021 p=0.757
+  mk_nop  mean 2.72 d, P95 8 d, max 33 d | KS D=0.021 p=0.757
+  mk_sea  mean 2.73 d, P95 7 d, max 34 d | KS D=0.028 p=0.422
+  iid     mean 1.57 d, P95 4 d, max 14 d | KS D=0.226 p=5.99e-45

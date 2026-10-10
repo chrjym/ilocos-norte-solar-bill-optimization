@@ -1,0 +1,39 @@
+[markov] using fitted TPMs from tpm_batac.npz
+Household: 5,677 kWh/yr, aircon=True, offset=generation, N=2000
+Bill without solar: ₱70,225/yr
+
+sched    kWp    capex  bill/yr    saves   cut payback  mo P90 mo CVaR  P(>X)
+default  0.0        0   70,225        0    0%       —   7,983   8,841  1.000
+default  0.5   22,500   61,290    8,935   13%    2.5y   7,101   7,930  1.000
+default  1.0   45,000   53,927   16,298   23%    2.8y   6,338   7,131  1.000
+default  1.5   67,500   47,727   22,498   32%    3.0y   5,710   6,468  1.000
+default  2.0   90,000   42,120   28,105   40%    3.2y   5,156   5,888  1.000
+default  2.5  112,500   36,790   33,436   48%    3.4y   4,628   5,347  0.997
+default  3.0  135,000   31,589   38,637   55%    3.5y   4,125   4,826  0.959
+default  3.5  157,500   26,502   43,724   62%    3.6y   3,589   4,308  0.918
+default  4.0  180,000   21,813   48,413   69%    3.7y   2,799   3,477  0.902
+default  4.5  202,500   19,150   51,076   73%    4.0y   2,238   2,519  0.890
+default  5.0  225,000   18,890   51,335   73%    4.4y   2,203   2,464  0.882
+default  5.5  247,500   18,707   51,518   73%    4.8y   2,181   2,440  0.875
+default  6.0  270,000   18,541   51,684   74%    5.2y   2,160   2,418  0.869
+solar    0.0        0   70,225       -0   -0%       —   7,983   8,841  1.000
+solar    0.5   22,500   61,228    8,998   13%    2.5y   7,096   7,925  1.000
+solar    1.0   45,000   53,512   16,714   24%    2.7y   6,310   7,107  1.000
+solar    1.5   67,500   46,867   23,358   33%    2.9y   5,643   6,406  1.000
+solar    2.0   90,000   40,962   29,263   42%    3.1y   5,060   5,795  1.000
+solar    2.5  112,500   35,505   34,720   49%    3.2y   4,526   5,241  0.991
+solar    3.0  135,000   30,266   39,959   57%    3.4y   4,018   4,717  0.923
+solar    3.5  157,500   25,177   45,049   64%    3.5y   3,478   4,195  0.844
+solar    4.0  180,000   20,530   49,695   71%    3.6y   2,670   3,341  0.816
+solar    4.5  202,500   18,056   52,170   74%    3.9y   2,148   2,422  0.808
+solar    5.0  225,000   17,845   52,381   75%    4.3y   2,119   2,378  0.803
+solar    5.5  247,500   17,696   52,529   75%    4.7y   2,100   2,358  0.798
+solar    6.0  270,000   17,564   52,661   75%    5.1y   2,083   2,340  0.795
+
+Optimal design (X = ₱1,000/month, α = 0.05, λ = 0.5):
+  risk-neutral        4.5 kWp, solar schedule → bill ₱18,056/yr (−74%, saves ₱52,170/yr), payback 3.9 y, P(month > X) 0.808
+  mean-CVaR           4.5 kWp, solar schedule → bill ₱18,056/yr (−74%, saves ₱52,170/yr), payback 3.9 y, P(month > X) 0.808
+  chance-constrained  infeasible within the size range
+  load shifting at 4.5 kWp saves an extra ₱1,094/yr
+
+Wrote /home/tin/ilocos-norte-solar-bill-optimization/results/optimization.csv and /home/tin/ilocos-norte-solar-bill-optimization/results/optimization.png
