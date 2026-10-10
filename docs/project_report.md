@@ -270,6 +270,26 @@ The household is the Batac City account in `data/bills/bills.csv`: one September
 
 Both objectives choose 4.5 kWp. Below it, each extra 0.5 kWp still replaces imports at the full ₱12.37/kWh; above it, the added output is mostly exported at the generation credit, so savings flatten (+₱211 a year from 4.5 to 5.0 kWp) while payback lengthens. The ₱1,000 monthly-bill target cannot be met at any size: with aircon, most cooling load falls at night when PV produces nothing, and without a battery that night-time energy is always bought from the grid (P(month > ₱1,000) = 0.81 at 4.5 kWp). Moving washing, pumping and ironing to 11:00 saves a further ₱1,094 a year at 4.5 kWp at no cost.
 
+**Monthly bill with 4.5 kWp** (solar schedule, generation-only credit, mean of 2,000 simulated years; `src/monthly.py`, `results/monthly_bill.csv`). Only September is an observed bill; the other months are model estimates.
+
+| Month | kWh used | Bill without solar | Bill with 4.5 kWp | Reduced by | Cut |
+| --- | --- | --- | --- | --- | --- |
+| Jan | 321 | ₱3,972 | ₱937 | ₱3,035 | 76% |
+| Feb | 335 | ₱4,140 | ₱958 | ₱3,182 | 77% |
+| Mar | 494 | ₱6,108 | ₱1,497 | ₱4,611 | 75% |
+| Apr | 629 | ₱7,784 | ₱2,054 | ₱5,730 | 74% |
+| May | 676 | ₱8,353 | ₱2,243 | ₱6,110 | 73% |
+| Jun | 582 | ₱7,192 | ₱1,924 | ₱5,267 | 73% |
+| Jul | 546 | ₱6,757 | ₱1,796 | ₱4,961 | 73% |
+| Aug | 488 | ₱6,032 | ₱1,577 | ₱4,455 | 74% |
+| **Sep (billed)** | 464 | ₱5,739 | ₱1,512 | ₱4,228 | 74% |
+| Oct | 429 | ₱5,304 | ₱1,357 | ₱3,946 | 74% |
+| Nov | 382 | ₱4,726 | ₱1,193 | ₱3,532 | 75% |
+| Dec | 333 | ₱4,119 | ₱1,008 | ₱3,111 | 76% |
+| **Year** | 5,677 | ₱70,225 | ₱18,056 | ₱52,170 | 74% |
+
+The 4.5 kWp system produces about 6,699 kWh a year: 2,053 kWh is used directly at home and 4,647 kWh is exported for credit. About 3,625 kWh a year is still imported, mostly night-time aircon. The largest peso reductions fall in April and May, the hottest months.
+
 If the export credit may instead offset the whole bill, savings keep growing up to the 6 kWp limit (annual bill ₱2,381), so the size answer depends on the net-metering rule (Section 5.3). If September 2026 was 15% heat-inflated, the optimum falls to 3.5–4.0 kWp. Across both cases, 3.5–4.5 kWp is the robust range.
 
 ### 4.5 Effect of cloud persistence (research question 1)
@@ -374,6 +394,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.validate_load 500         # Chapter 4.2
 .venv/bin/python -m src.convergence 5000 500      # Chapter 4.3
 .venv/bin/python -m src.optimization --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # Chapter 4.4
+.venv/bin/python -m src.monthly --kwh 464 --pesos 5739.45 --month 9 --aircon --kwp 4.5   # Chapter 4.4 monthly table
 .venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # Chapter 4.5
 .venv/bin/python -m src.sensitivity 512 200       # Chapter 4.6
 .venv/bin/python -m src.backtest                  # back-test against data/bills/bills.csv

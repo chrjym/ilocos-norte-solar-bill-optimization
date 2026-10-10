@@ -82,6 +82,7 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 | File | What it does |
 |---|---|
 | `household.py` | **The main tool for this household.** Takes the real bill(s), calibrates the model to them, and prints a table of PV sizes with yearly bill, savings and payback, plus a recommendation. Works with one bill (`--month 9`). |
+| `monthly.py` | **Month-by-month bill with and without solar** for your household (default 4.5 kWp): kWh used, bill before and after, PV produced, used at home, exported, and the reduction. Writes `results/monthly_bill.csv` and `.txt`. |
 | `persistence.py` | **Cloud-persistence test on your household:** compares Markov-chain weather with independent random days, both calibrated to your bill. Writes `results/persistence.txt`. |
 | `sensitivity.py` | **Sobol sensitivity analysis:** which uncertain input (panel price, rate increases, panel ageing, discount rate, ...) changes the answer most. |
 | `__init__.py` | Empty file that makes `src/` a Python package. |
@@ -94,6 +95,7 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 | `load_validation.png/.txt` | `validate_load.py` | Temperature and load checks. |
 | `convergence.png/.txt` | `convergence.py` | Answers stabilising as the number of simulated years grows. |
 | `optimization.png/.csv`, `optimization_run.log` | `optimization.py` | Bill, risk and payback for each PV size. Uses the September 2026 bill (5,677 kWh/yr, aircon, generation-only credit). |
+| `monthly_bill.csv/.txt` | `monthly.py` | Monthly bill without vs with 4.5 kWp solar and the peso reduction (report §4.4). |
 | `persistence.txt` | `persistence.py` | Effect of ignoring cloud persistence on your household's bills (report §4.5). |
 | `sensitivity.png/.txt`, `sensitivity_run.log`, `sensitivity_samples.npz` | `sensitivity.py` | Which inputs matter most. The `.npz` holds the raw samples. |
 

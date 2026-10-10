@@ -35,6 +35,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.simulation 2000           # size sweep + persistence ablation
 .venv/bin/python -m src.optimization --kwh 220 [--pesos 2600] [--aircon]   # Phase 8
 .venv/bin/python -m src.household --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # ONE bill (Sep 2026)
+.venv/bin/python -m src.monthly --kwh 464 --pesos 5739.45 --month 9 --aircon --kwp 4.5   # monthly bill with vs without solar
 .venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon   # cloud persistence, this household
 .venv/bin/python -m src.sensitivity 512 200       # Phase 9: Sobol → results/
 .venv/bin/python -m src.backtest                  # Phase 10: data/bills/bills.csv vs model
