@@ -9,7 +9,7 @@ with a season-conditioned Markov chain of clearness index and Monte Carlo
 replications. It then sizes PV (no battery storage) against a
 risk-adjusted objective (mean–CVaR or chance-constrained).
 
-Project report: [`docs/project_report.md`](docs/project_report.md) · Plan: [`docs/project_plan.md`](docs/project_plan.md) · Concept: [`docs/study_concept.md`](docs/study_concept.md) · Repository guide: [`docs/repository_guide.md`](docs/repository_guide.md)
+Project report: [`docs/project_report.md`](docs/project_report.md) · Plan: [`docs/project_plan.md`](docs/project_plan.md) · Concept: [`docs/study_concept.md`](docs/study_concept.md) · Repository guide: [`docs/repository_guide.md`](docs/repository_guide.md)  · Presenter guide: [`docs/presenter_guide.md`](docs/presenter_guide.md)
 
 ## Pipeline
 
@@ -58,7 +58,7 @@ data/
   appliances.csv  appliance inventory for the hourly load shape
 src/              model code (pipeline above)
 results/          figures, tables and run logs
-docs/             project report, project plan, study concept, repository guide
+docs/             project report, project plan, study concept, repository and presenter guides
 ```
 
 ## Tooling

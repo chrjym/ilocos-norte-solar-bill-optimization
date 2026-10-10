@@ -108,6 +108,7 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 | `project_report.md` | **The main write-up:** introduction, data, methodology, results, limitations and conclusion. §2.1 explains why only the September 2026 bill is used; §5.3 lists the limitations. |
 | `project_plan.md` | The detailed technical plan (phases 1–10) that the code follows. Code comments such as "§4.3" refer to sections of this file. |
 | `study_concept.md` | The original concept note: why Ilocos Norte, the problem statement and the research idea. |
+| `presenter_guide.md` | Slide-by-slide guide for presenting the adviser deck: what each slide shows, what to say, key numbers, likely questions. |
 | `repository_guide.md` | This file. |
 
 ## 7. Running order
