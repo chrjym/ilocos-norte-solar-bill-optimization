@@ -9,7 +9,7 @@ with a season-conditioned Markov chain of clearness index and Monte Carlo
 replications. It then sizes PV (no battery storage) against a
 risk-adjusted objective (mean–CVaR or chance-constrained).
 
-Project report: [`docs/project_report.md`](docs/project_report.md) · Plan: [`docs/project_plan.md`](docs/project_plan.md) · Concept: [`docs/study_concept.md`](docs/study_concept.md) · Repository guide: [`docs/repository_guide.md`](docs/repository_guide.md)
+Project report: [`docs/project_report.md`](docs/project_report.md) · Plan: [`docs/project_plan.md`](docs/project_plan.md) · Concept: [`docs/study_concept.md`](docs/study_concept.md) · Repository guide: [`docs/repository_guide.md`](docs/repository_guide.md)  · Presenter guide: [`docs/presenter_guide.md`](docs/presenter_guide.md)
 
 ## Pipeline
 
@@ -35,9 +35,11 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.simulation 2000           # size sweep + persistence ablation
 .venv/bin/python -m src.optimization --kwh 220 [--pesos 2600] [--aircon]   # Phase 8
 .venv/bin/python -m src.household --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # ONE bill (Sep 2026)
+.venv/bin/python -m src.monthly --kwh 464 --pesos 5739.45 --month 9 --aircon --kwp 4.5   # monthly bill with vs without solar
 .venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon   # cloud persistence, this household
 .venv/bin/python -m src.sensitivity 512 200       # Phase 9: Sobol → results/
 .venv/bin/python -m src.backtest                  # Phase 10: data/bills/bills.csv vs model
+.venv/bin/python -m pytest tests -v               # verification & validation tests
 ```
 
 ## Household data
@@ -57,7 +59,7 @@ data/
   appliances.csv  appliance inventory for the hourly load shape
 src/              model code (pipeline above)
 results/          figures, tables and run logs
-docs/             project report, project plan, study concept, repository guide
+docs/             project report, project plan, study concept, repository and presenter guides
 ```
 
 ## Tooling
