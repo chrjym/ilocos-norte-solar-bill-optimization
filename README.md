@@ -39,6 +39,7 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon   # cloud persistence, this household
 .venv/bin/python -m src.sensitivity 512 200       # Phase 9: Sobol → results/
 .venv/bin/python -m src.backtest                  # Phase 10: data/bills/bills.csv vs model
+.venv/bin/python -m pytest tests -v               # verification & validation tests
 ```
 
 ## Household data

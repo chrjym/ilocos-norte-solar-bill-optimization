@@ -196,6 +196,25 @@ Sobol indices are estimated with SALib (Saltelli sampling, N = 512, giving 5,120
 | Export credit rate | 0.8–1.2 × generation rate |
 | Credit offset rule | whole bill / generation only |
 
+### 3.9 Basis of the formulas
+
+Every formula in the model follows an established method:
+
+| Formula | Code | Source |
+| --- | --- | --- |
+| Markov chain of daily clearness-index states | `src/markov.py` | Aguiar, Collares-Pereira & Conde (1988) |
+| Transition probabilities by maximum likelihood, p̂ᵢⱼ = nᵢⱼ / nᵢ; likelihood-ratio test of chain order | `src/estimate_tpm.py` | Anderson & Goodman (1957) |
+| Hourly disaggregation of daily kt (simplified) | `src/markov.py` | Aguiar & Collares-Pereira (1992) |
+| Extraterrestrial irradiance H₀ = 1361·(1 + 0.033 cos(2πd/365))·cos θz; declination δ = 23.45°·sin(2π(284 + d)/365) | `src/markov.py` | Duffie & Beckman (2013, Ch. 1); Cooper (1969) |
+| Cell temperature T_cell = T_amb + G·(NOCT − 20)/800 | `src/pv.py` | Duffie & Beckman (2013, Ch. 23) |
+| PV output P = (G/1000)·[1 + γ(T_cell − 25)]·derate, γ = −0.004/°C | `src/pv.py` | Dobos (2014) |
+| Unbundled bill and net-metering credit | `src/tariff.py` | INEC (2020); ERC Res. 09 s.2013; RA 9513 |
+| Common random numbers | `src/simulation.py` | Law (2015, Ch. 11) |
+| CVaR₉₅ = mean of the worst 5% of outcomes | `src/simulation.py` | Rockafellar & Uryasev (2000) |
+| Capital recovery factor r(1 + r)ⁿ / ((1 + r)ⁿ − 1) | `src/optimization.py` | Duffie & Beckman (2013, Ch. 11) |
+| Sobol first- and total-order indices | `src/sensitivity.py` | Saltelli et al. (2010); Herman & Usher (2017) |
+| Verification and validation framework (Section 4.7) | `tests/test_model.py` | Sargent (2013) |
+
 ## Chapter 4. Results
 
 ### 4.1 Weather: the Markov chain reproduces Batac's record
@@ -317,6 +336,35 @@ The optimal size is a household question: consumption, aircon ownership and the 
 
 The first-year bill cut (mean 87%, P5–P95 71–100%) is explained almost entirely by the credit offset rule (total-order index 0.99). Panel degradation has no material effect on any output.
 
+### 4.7 Verification and validation
+
+The model was checked in two ways with an automated test suite (`tests/test_model.py`, 27 tests, all passing; run with `.venv/bin/python -m pytest tests -v`). **Verification** asks whether the code computes what the equations in Chapter 3 say ("is the model built right?"). **Validation** asks whether its output agrees with real data for Batac ("is it the right model?").
+
+**Verification (19 tests).** Each check has a known correct answer, often worked by hand:
+
+| Layer | What is checked |
+| --- | --- |
+| Markov chain | Every transition-matrix row sums to 1; the stationary distribution satisfies πP = π; simulated states and kt stay inside their bins; the calendar has 365 days; extraterrestrial irradiance is zero at night |
+| PV output | Hand calculation: 1,000 W/m² at 30 °C gives 0.7353 kWh per kWp in that hour; zero irradiance gives zero output; a hotter panel produces less |
+| Tariff | All-in rate equals the published ₱11.7246/kWh; 100 kWh without solar equals 100 × 11.7246 + ₱5.67 fixed charge; export credit carries forward and never pushes a bill below the fixed charge; generation-only offset is never cheaper over a year than whole-bill offset |
+| Monte Carlo engine | Energy balance each month (import − export = load − PV); 0 kWp exports nothing; adding PV never raises the mean bill; the same seed reproduces the same result; changing aircon ownership leaves the sampled weather unchanged (common random numbers) |
+| Calibration | After calibration the model reproduces the September 2026 bill exactly (464 kWh, ₱5,739.45) |
+
+**Validation (8 tests).** Model output is compared against independent data with a stated pass condition:
+
+| Comparison | Pass condition | Result |
+| --- | --- | --- |
+| Monthly-mean kt, synthetic vs 24 years of NASA POWER | within 3% every month | within 0.8% |
+| Lag-1 autocorrelation of daily kt | within 0.10 of the record | 0.565 vs 0.637 |
+| Same test on independent (i.i.d.) days, as a check that the test can fail | must fail | 0.10 vs 0.64 (fails) |
+| Month-to-month variability of kt | within 25% of the record | 0.040 vs 0.043 |
+| Annual PV yield | 1,300–1,650 kWh/kWp (typical for Northern Luzon) | about 1,490 |
+| Dry-season vs wet-season PV output | dry higher | yes |
+| Published tariff (uncalibrated) vs real September 2026 bill | error below 10% | 5.1% (₱5,446 vs ₱5,739) |
+| Uncalibrated monthly load | household scale (150–900 kWh) | yes |
+
+The weather and PV layers are validated against independent records. The bill is validated only at the tariff level: the single bill has no solar, so the net-metering credit rule and the seasonal load pattern cannot yet be checked against real data (Section 5.3; back-test B and C in `src/backtest.py`). The split into verification and operational validation follows Sargent (2013).
+
 ## Chapter 5. Discussion and Limitations
 
 ### 5.1 Why risk-adjusted sizing often agrees with expected-value sizing
@@ -381,6 +429,15 @@ Answers to the research questions:
 - Republic Act No. 9513, Renewable Energy Act of 2008.
 - Aguiar, R. and Collares-Pereira, M. (1992). TAG: a time-dependent, autoregressive, Gaussian model for generating synthetic hourly radiation. *Solar Energy* 49(3).
 - Herman, J. and Usher, W. (2017). SALib: an open-source Python library for sensitivity analysis. *Journal of Open Source Software* 2(9).
+- Aguiar, R. J., Collares-Pereira, M., and Conde, J. P. (1988). Simple procedure for generating sequences of daily radiation values using a library of Markov transition matrices. *Solar Energy* 40(3), 269–279.
+- Anderson, T. W. and Goodman, L. A. (1957). Statistical inference about Markov chains. *Annals of Mathematical Statistics* 28(1), 89–110. https://doi.org/10.1214/aoms/1177707039
+- Cooper, P. I. (1969). The absorption of radiation in solar stills. *Solar Energy* 12(3), 333–346.
+- Dobos, A. P. (2014). *PVWatts Version 5 Manual* (NREL/TP-6A20-62641). National Renewable Energy Laboratory.
+- Duffie, J. A. and Beckman, W. A. (2013). *Solar Engineering of Thermal Processes* (4th ed.). Wiley.
+- Law, A. M. (2015). *Simulation Modeling and Analysis* (5th ed.). McGraw-Hill.
+- Rockafellar, R. T. and Uryasev, S. (2000). Optimization of conditional value-at-risk. *Journal of Risk* 2(3), 21–41.
+- Saltelli, A., Annoni, P., Azzini, I., Campolongo, F., Ratto, M., and Tarantola, S. (2010). Variance based sensitivity analysis of model output. Design and estimator for the total sensitivity index. *Computer Physics Communications* 181(2), 259–270. https://doi.org/10.1016/j.cpc.2009.09.018
+- Sargent, R. G. (2013). Verification and validation of simulation models. *Journal of Simulation* 7(1), 12–24. https://doi.org/10.1057/jos.2012.20
 
 ## Appendix: Running the model
 
@@ -398,4 +455,5 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # Chapter 4.5
 .venv/bin/python -m src.sensitivity 512 200       # Chapter 4.6
 .venv/bin/python -m src.backtest                  # back-test against data/bills/bills.csv
+.venv/bin/python -m pytest tests -v               # Chapter 4.7 (verification and validation)
 ```

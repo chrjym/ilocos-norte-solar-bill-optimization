@@ -1,6 +1,6 @@
 # Presenter Guide
 
-A slide-by-slide guide to the adviser presentation, **"Stochastic Optimization of Household Electricity Bills Under Solar Variability"** (17 slides).
+A slide-by-slide guide to the adviser presentation, **"Stochastic Optimization of Household Electricity Bills Under Solar Variability"** (20 slides).
 
 Each slide has four parts:
 
@@ -11,20 +11,20 @@ Each slide has four parts:
 
 Deck link: https://claude.ai/artifact/YEoHBdjqx5wr4AERecPu65 (share it from the deck's Share menu before the meeting).
 
-The deck was trimmed from 34 to 17 slides. Detail that was removed (data sources, PV and temperature models, tariff, net metering, validation, convergence, persistence and sensitivity) is kept under **Backup answers** below, so you can still answer questions on it.
+The deck was trimmed from 34 to 17 slides, then a formula-basis slide (11) and two verification and validation slides (16–17) were added. Detail that was removed (data sources, PV and temperature models, tariff, net metering, validation, convergence, persistence and sensitivity) is kept under **Backup answers** below, so you can still answer questions on it.
 
 ---
 
 ## Suggested split and timing
 
-About 20–22 minutes plus questions. One way to divide it among presenters:
+About 23–25 minutes plus questions. One way to divide it among presenters:
 
 | Part | Slides | Topic | Time |
 |---|---|---|---|
 | 1 | 1–5 | Introduction, scope, the bill | 5 min |
-| 2 | 6–10 | The model | 6 min |
-| 3 | 11–14 | Results and what the models contributed | 7 min |
-| 4 | 15–17 | Limitations, conclusion | 3 min |
+| 2 | 6–11 | The model and the basis of its formulas | 7 min |
+| 3 | 12–17 | Results, what the models contributed, verification and validation | 9 min |
+| 4 | 18–20 | Limitations, conclusion | 3 min |
 
 ---
 
@@ -134,18 +134,24 @@ If you remember nothing else:
 - **Key numbers:** sizes 0–6 kWp in 0.5 steps; ₱45,000/kWp (placeholder); 8% discount; 20-year life; λ = 0.5; X = ₱1,000; α = 0.05.
 - **Say:** "We test 13 sizes × 2 schedules = 26 designs and pick the best under each objective."
 - **If asked "is ₱45,000/kWp real?":** it is a placeholder until we get an installer quote. Sensitivity analysis shows cost barely changes the best size.
+### Slide 11: Basis of the formulas
+
+- **Shows:** each formula next to the published source it comes from (report §3.9).
+- **Say:** "None of the formulas was invented for this project." The weather chain follows Aguiar et al. (1988), fitted with Anderson & Goodman (1957). Panel output is NREL's PVWatts (Dobos, 2014). The risk measure is CVaR (Rockafellar & Uryasev, 2000). The testing follows Sargent (2013).
+- **If asked "why such old sources?":** these are the original papers that define the methods. Recent studies still cite them.
+
 ---
 
-## Part 3: Results and what the models contributed
+## Part 3: Results, what the models contributed, and V&V
 
-### Slide 11: Result 1: annual bill by PV size
+### Slide 12: Result 1: annual bill by PV size
 
 - **Shows:** bar chart and table of the mean annual bill from 0 to 6 kWp; 4.5 kWp highlighted.
 - **Say:**
   - Each 0.5 kWp saves ₱4,600–9,000/yr up to 4 kWp, then ₱2,500 for the step to 4.5.
   - After 4.5 kWp, each step saves only ₱130–210, because the extra power is exported at the low generation credit.
 - **Key numbers:** ₱70,225 (no solar) → ₱18,056 (4.5 kWp); payback 3.9 years; 6 kWp only reaches ₱17,564 with a 5.1-year payback.
-### Slide 12: Result 2: recommended design
+### Slide 13: Result 2: recommended design
 
 - **Shows:** **4.5 kWp** with four numbers and the objectives table.
 - **Key numbers:** −74%; ₱52,170 saved per year; 3.9-year payback on ₱202,500; +₱1,094/yr from load shifting.
@@ -153,7 +159,7 @@ If you remember nothing else:
   - Risk-neutral and mean–CVaR both choose 4.5 kWp: **the risk term changes nothing** here.
   - The ₱1,000/month target is **impossible at any size** (P = 0.81 at 4.5 kWp), because night aircon must come from the grid without a battery.
   - Robust range: **3.5–4.5 kWp**, covering a hot September and the other credit rule.
-### Slide 13: Result 3: monthly bill with 4.5 kWp
+### Slide 14: Result 3: monthly bill with 4.5 kWp
 
 - **Shows:** each month's bill without and with solar, and the reduction; yearly summary.
 - **Say:**
@@ -162,7 +168,7 @@ If you remember nothing else:
   - Biggest peso savings in April and May (₱5,700–6,100/month), the hottest months.
   - PV makes 6,699 kWh/yr: 2,053 used at home, 4,647 exported. About 3,625 kWh is still bought, mostly night aircon.
 - **Remember:** only September is a real bill; other months are model estimates.
-### Slide 14: What the models contributed
+### Slide 15: What the models contributed
 
 - **Shows:** two cards (Markov chain, Monte Carlo) and a table linking each main finding to the model that made it possible.
 - **Say:**
@@ -176,11 +182,31 @@ If you remember nothing else:
 - **One line to remember:** *"The Markov chain makes the weather realistic, and Monte Carlo turns that weather into the full range of possible bills. Together they show 4.5 kWp is the best size and how confident we can be in the savings."*
 - **If asked "why not just use average weather?":** with two prices and cloudy runs, the bill is non-linear in the weather, so an average year gives the wrong average bill and no risk range.
 
+### Slide 16: Verification: is the model built right?
+
+- **Shows:** table of 19 verification checks by layer (`tests/test_model.py`).
+- **Say:**
+  - Verification means the code does what the equations say. Each test has a known answer.
+  - Examples worked by hand: 100 kWh without solar = 100 × ₱11.7246 + ₱5.67; 1,000 W/m² at 30 °C gives 0.7353 kWh per kWp.
+  - Energy balances every month, more PV never raises the bill, and the same seed gives the same result.
+  - All 19 pass; run with `.venv/bin/python -m pytest tests -v`.
+
+### Slide 17: Validation: is it the right model?
+
+- **Shows:** model vs real data, with the pass condition for each.
+- **Say:**
+  - Weather: monthly cloudiness within 0.8% of 24 years of NASA data; persistence 0.565 vs 0.637.
+  - The persistence test can fail: independent days score 0.10, so the test means something.
+  - PV yield about 1,490 kWh/kWp, typical for Northern Luzon.
+  - The published tariff alone is within 5.1% of the real September bill.
+- **Be honest:** the credit rule and the seasonal usage are not validated yet. That needs a net-metered bill and a second month.
+- **If asked "verification vs validation?":** verification = built right (code vs equations); validation = right model (output vs reality).
+
 ---
 
 ## Part 4: Limitations and conclusion
 
-### Slide 15: Limitations: model and data
+### Slide 18: Limitations: model and data
 
 - **Shows:** 9 limitations and their effects.
 - **Say:** the most important are:
@@ -193,7 +219,7 @@ If you remember nothing else:
 - **Tip:** say these confidently. Stating limitations clearly shows you understand the model.
 - **If asked "is one month enough?":** enough to demonstrate the method, not for a precise annual forecast. If heat inflated September by 15%, the year is 4,931 kWh and the size is 3.5–4.0 kWp.
 
-### Slide 16: Conclusion
+### Slide 19: Conclusion
 
 - **Shows:** the answers to RQ1–RQ3.
 - **Say:**
@@ -204,7 +230,7 @@ If you remember nothing else:
   - Recommended range: **3.5–4.5 kWp**.
 - **Next step to mention:** one net-metered INEC bill to settle the credit rule; then another month of bills (ideally April or May) and an installer quote.
 
-### Slide 17: Thank you
+### Slide 20: Thank you
 
 - **Say:** invite questions.
 - **Good questions to ask the adviser:**
