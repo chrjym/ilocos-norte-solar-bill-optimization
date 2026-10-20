@@ -95,8 +95,8 @@ def main():
     ap.add_argument("--kwh", type=float, nargs="+", help="billed kWh/month (1 or 12 values)")
     ap.add_argument("--pesos", type=float, nargs="+", help="billed ₱/month (optional)")
     ap.add_argument("--aircon", action="store_true")
-    ap.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12",
-                    help="with a single bill: which month it is (1=Jan … 12=Dec)")
+    ap.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12", nargs="+",
+                    help="month of each bill, same order as --kwh (1=Jan … 12=Dec)")
     ap.add_argument("--reps", type=int, default=2000)
     ap.add_argument("--threshold", type=float, default=1000.0, help="₱X for the chance constraint")
     ap.add_argument("--alpha", type=float, default=0.05)

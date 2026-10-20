@@ -5,7 +5,7 @@ solar, PV output, self-consumed and exported kWh, bill with PV (solar
 schedule for shiftable loads) and the reduction. Means over the simulated years.
 
 Run from the project root:
-  python3 -m src.monthly --kwh 464 --pesos 5739.45 --month 9 --aircon --kwp 4.5
+  python3 -m src.monthly --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon --kwp 4.5
 Writes results/monthly_bill.csv and results/monthly_bill.txt
 """
 
@@ -28,7 +28,7 @@ def main():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--kwh", type=float, nargs="+", required=True)
     p.add_argument("--pesos", type=float, nargs="+")
-    p.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12")
+    p.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12", nargs="+")
     p.add_argument("--aircon", action="store_true")
     p.add_argument("--offset", choices=["bill", "generation"], default="generation")
     p.add_argument("--kwp", type=float, default=4.5)

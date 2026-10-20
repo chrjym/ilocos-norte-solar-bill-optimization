@@ -1,12 +1,12 @@
 """Research question 1 on the calibrated household: what does ignoring
 day-to-day cloud persistence do to the bill distribution?
 
-Same household calibration as src.household (one bill + month, or 12 bills).
+Same household calibration as src.household (1–12 bills, each with its month).
 Markov scenarios vs i.i.d.-day scenarios, both calibrated to the same monthly
 kWh, compared at several PV sizes.
 
 Run from the project root:
-  python3 -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation
+  python3 -m src.persistence --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon --offset generation
 Writes results/persistence.txt
 """
 
@@ -26,7 +26,7 @@ def main():
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--kwh", type=float, nargs="+", required=True)
     p.add_argument("--pesos", type=float, nargs="+")
-    p.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12")
+    p.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12", nargs="+")
     p.add_argument("--aircon", action="store_true")
     p.add_argument("--offset", choices=["bill", "generation"], default="generation")
     p.add_argument("--reps", type=int, default=2000)
