@@ -4,7 +4,7 @@ This guide explains what every folder and file in the project is for, how they c
 
 ## 1. The project in one paragraph
 
-A household in Ilocos Norte pays INEC a monthly bill of ₱12.36/kWh, based on the September 2026 bill. The project asks **how many kWp of rooftop solar (no battery) the household should install to cut that bill the most, and how sure we can be.** Weather changes from day to day, so the project does not use a single "average year". It simulates thousands of possible years:
+A household in Ilocos Norte pays INEC a monthly bill of ₱12.36/kWh, based on the September and October 2026 bills. The project asks **how many kWp of rooftop solar (no battery) the household should install to cut that bill the most, and how sure we can be.** Weather changes from day to day, so the project does not use a single "average year". It simulates thousands of possible years:
 
 ```
 weather (Markov chain) → solar output → household load → INEC bill → compare PV sizes
@@ -39,7 +39,7 @@ ilocos-norte-solar-bill-optimization/
 | `raw/tariff/URS-January-2020.pdf` | INEC's official unbundled rate schedule (Jan 2020). | The list of bill line items (generation, transmission, VAT, universal charges, ...). |
 | `raw/tariff/inec_residential_rate.html` | Saved news page with the April 2026 INEC rate. | Updating the 2020 rates to 2026. |
 | `processed/tpm_batac.npz` | Transition probability matrices (TPMs) fitted from the Batac weather. Created by `src/estimate_tpm.py`. | The Markov chain that generates synthetic weather. |
-| `bills/bills.csv` | **The real household bill:** September 2026, 464 kWh, ₱5,739.45, aircon = yes, no solar yet. | Calibrating the model to this household, and back-testing. |
+| `bills/bills.csv` | **The real household bills:** September 2026 (464 kWh, ₱5,739.45) and October 2026 (509 kWh, ₱6,295.52), aircon = yes, no solar yet. | Calibrating the model to this household, and back-testing. |
 | `bills/bills_template.csv` | Empty copy showing the column format. | Adding more bills or more households. |
 | `appliances.csv` | Household appliances with wattage, how often they are used and at what hours (fridge, fans, aircon, rice cooker, washing machine, ...). | Building the **hourly shape** of electricity use. |
 
@@ -75,13 +75,13 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 | `validate_generator.py` | Does the synthetic weather look like real Batac weather (monthly averages, cloudy-spell lengths, day-to-day correlation)? | `results/generator_validation.*` |
 | `validate_load.py` | Are simulated temperature and household load realistic (seasonality, which appliances use the most)? | `results/load_validation.*` |
 | `convergence.py` | How many simulated years are enough for stable answers? | `results/convergence.*` |
-| `backtest.py` | Does the model's bill match the real bills in `bills.csv`? The September 2026 bill was off by 5.1% before calibration. | printed to the screen |
+| `backtest.py` | Does the model's bill match the real bills in `bills.csv`? Both bills (Sep and Oct 2026) were off by 5.1% before calibration; predicting one month from the other misses by 16.8%. | printed to the screen |
 
 ### 4.4 Analysis tools
 
 | File | What it does |
 |---|---|
-| `household.py` | **The main tool for this household.** Takes the real bill(s), calibrates the model to them, and prints a table of PV sizes with yearly bill, savings and payback, plus a recommendation. Works with one bill (`--month 9`). |
+| `household.py` | **The main tool for this household.** Takes the real bill(s), calibrates the model to them, and prints a table of PV sizes with yearly bill, savings and payback, plus a recommendation. Works with 1–12 bills, each tagged with its month (`--month 9 10`). |
 | `monthly.py` | **Month-by-month bill with and without solar** for your household (default 4.5 kWp): kWh used, bill before and after, PV produced, used at home, exported, and the reduction. Writes `results/monthly_bill.csv` and `.txt`. |
 | `persistence.py` | **Cloud-persistence test on your household:** compares Markov-chain weather with independent random days, both calibrated to your bill. Writes `results/persistence.txt`. |
 | `sensitivity.py` | **Sobol sensitivity analysis:** which uncertain input (panel price, rate increases, panel ageing, discount rate, ...) changes the answer most. |
@@ -94,7 +94,7 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 | `generator_validation.png/.txt` | `validate_generator.py` | Synthetic vs real weather. |
 | `load_validation.png/.txt` | `validate_load.py` | Temperature and load checks. |
 | `convergence.png/.txt` | `convergence.py` | Answers stabilising as the number of simulated years grows. |
-| `optimization.png/.csv`, `optimization_run.log` | `optimization.py` | Bill, risk and payback for each PV size. Uses the September 2026 bill (5,677 kWh/yr, aircon, generation-only credit). |
+| `optimization.png/.csv`, `optimization_run.log` | `optimization.py` | Bill, risk and payback for each PV size. Uses the September and October 2026 bills (6,188 kWh/yr, aircon, generation-only credit). |
 | `monthly_bill.csv/.txt` | `monthly.py` | Monthly bill without vs with 4.5 kWp solar and the peso reduction (report §4.4). |
 | `persistence.txt` | `persistence.py` | Effect of ignoring cloud persistence on your household's bills (report §4.5). |
 | `sensitivity.png/.txt`, `sensitivity_run.log`, `sensitivity_samples.npz` | `sensitivity.py` | Which inputs matter most. The `.npz` holds the raw samples. |
@@ -105,7 +105,7 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 
 | File | Purpose |
 |---|---|
-| `project_report.md` | **The main write-up:** introduction, data, methodology, results, limitations and conclusion. §2.1 explains why only the September 2026 bill is used; §5.3 lists the limitations. |
+| `project_report.md` | **The main write-up:** introduction, data, methodology, results, limitations and conclusion. §2.1 explains why only the September and October 2026 bills are used; §5.3 lists the limitations. |
 | `project_plan.md` | The detailed technical plan (phases 1–10) that the code follows. Code comments such as "§4.3" refer to sections of this file. |
 | `study_concept.md` | The original concept note: why Ilocos Norte, the problem statement and the research idea. |
 | `presenter_guide.md` | Slide-by-slide guide for presenting the adviser deck: what each slide shows, what to say, key numbers, likely questions. |
@@ -130,10 +130,10 @@ Run every module from the project root as `.venv/bin/python -m src.<name>`.
 For the household result alone, steps 1–2 are already done, so run:
 
 ```
-.venv/bin/python -m src.household --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation
+.venv/bin/python -m src.household --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon --offset generation
 ```
 
-**Current answer:** about **4.5 kWp**, saving about ₱51,000/yr with a ~4-year payback, or 3.5–4.0 kWp if the hot September inflated the bill.
+**Current answer:** about **4.5 kWp**, saving about ₱55,000/yr with a ~3.7-year payback, or **5.0 kWp** if the worst months also matter (mean–CVaR).
 
 ## 8. Glossary
 
@@ -152,4 +152,4 @@ For the household result alone, steps 1–2 are already done, so run:
 | **CVaR95** | Average bill in the worst 5% of cases: a measure of bad-year risk. |
 | **Payback** | Years until the bill savings repay the cost of the panels. |
 | **Sobol index** | Share of the uncertainty in the answer caused by each input. |
-| **Calibration** | Scaling the model so it reproduces the real bill (464 kWh, ₱5,739.45). |
+| **Calibration** | Scaling the model so it reproduces the real bills (464 kWh, ₱5,739.45 and 509 kWh, ₱6,295.52). |

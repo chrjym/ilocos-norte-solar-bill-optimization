@@ -10,14 +10,16 @@ Calibration:
     temperature/solar coupling of the load model are kept.
   * Tariff: if ₱ amounts are given, all per-kWh rates are scaled so the
     model's all-in ₱/kWh matches the user's bills.
-  * One bill only (--month): the other 11 months follow the model's own
-    seasonal pattern (temperature-driven fans/aircon), scaled so the billed
-    month matches. Less certain than 12 real months — see the printed note.
+  * Fewer than 12 bills (--month, one month per bill): the missing months
+    follow the model's own seasonal pattern (temperature-driven fans/aircon),
+    scaled so its total over the billed months equals the bills; billed
+    months keep their real kWh. Less certain than 12 real months.
 
 Examples (run from the project root):
   python3 -m src.household --kwh 180 170 200 230 260 250 220 210 205 200 190 185 \
                            --pesos 2300 2180 2560 2950 3330 3200 2820 2690 2620 2560 2430 2370
   python3 -m src.household --kwh 220 --pesos 2650 --month 9   # ONE bill (September)
+  python3 -m src.household --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10   # Sep + Oct
   python3 -m src.household --kwh 220 --reps 1000 --budget 200000
 """
 import argparse
@@ -53,16 +55,31 @@ def calibrate_load(load, kwh12):
     return out
 
 
-def household_inputs(load, kwh_vals, pesos_vals, month=None):
-    """Return (kwh12, tariff scale) from 1 or 12 bills.
+def bill_months(month):
+    """`month` as a list of 1–12 ints (accepts None, an int or a list)."""
+    if month is None:
+        return []
+    return [month] if isinstance(month, int) else list(month)
 
-    One bill with `month`: kWh for other months from the model's seasonal
-    shape. One bill without `month`: repeated flat (not recommended).
+
+def household_inputs(load, kwh_vals, pesos_vals, month=None):
+    """Return (kwh12, tariff scale) from 1–12 bills.
+
+    Bills with `month` (one month per bill): missing months from the model's
+    seasonal shape, scaled to the billed total; billed months keep their kWh.
+    One bill without `month`: repeated flat (not recommended).
     """
-    if len(kwh_vals) == 1 and month:
+    months_in = bill_months(month)
+    if months_in and len(months_in) != len(kwh_vals):
+        raise SystemExit(f"--month: give one month per bill ({len(kwh_vals)}), got {len(months_in)}")
+    if months_in and len(set(months_in)) != len(months_in):
+        raise SystemExit("--month: each bill must be a different month")
+    if months_in and len(kwh_vals) < 12:
         months = day_months(load.shape[1])
         model = np.array([load[:, months == m + 1].sum((1, 2)).mean() for m in range(12)])
-        kwh = model * (kwh_vals[0] / model[month - 1])
+        idx = [m - 1 for m in months_in]
+        kwh = model * (sum(kwh_vals) / model[idx].sum())
+        kwh[idx] = kwh_vals
     else:
         kwh = expand12(kwh_vals, "kwh")
     scale = 1.0
@@ -89,7 +106,7 @@ def main():
     ap.add_argument("--offset", choices=["bill", "generation"], default="bill",
                     help="which charges net-metering credits may offset")
     ap.add_argument("--month", type=int, choices=range(1, 13), metavar="1-12",
-                    help="with a single bill: which month it is (1=Jan … 12=Dec)")
+                    nargs="+", help="month of each bill, same order as --kwh (1=Jan … 12=Dec)")
     a = ap.parse_args()
     if a.pesos and len(a.pesos) != len(a.kwh):
         raise SystemExit("--pesos needs the same number of values as --kwh")
@@ -97,14 +114,18 @@ def main():
     pv1, load = generate_scenarios(a.reps, aircon=a.aircon)
     kwh, scale = household_inputs(load, a.kwh, a.pesos, a.month)
     pesos = expand12(a.pesos, "pesos") if a.pesos and len(a.pesos) == 12 else None
+    if a.pesos and a.month:                       # show the real ₱ only for billed months
+        pesos = np.full(12, np.nan)
+        pesos[[m - 1 for m in a.month]] = a.pesos
     if a.pesos:
         print(f"Your all-in rate: ₱{scale * effective_rate():.2f}/kWh "
               f"(model default ₱{effective_rate():.2f}/kWh → rates scaled ×{scale:.3f})")
     else:
         print(f"No ₱ amounts given; using model tariff ₱{effective_rate():.2f}/kWh")
-    if len(a.kwh) == 1:
+    if len(a.kwh) < 12:
         if a.month:
-            print(f"ONE bill ({MONTHS[a.month - 1]}): other months estimated from the model's "
+            billed = ", ".join(MONTHS[m - 1] for m in a.month)
+            print(f"{len(a.kwh)} bill(s) ({billed}): other months estimated from the model's "
                   "seasonal pattern:\n  " + "  ".join(f"{MONTHS[m]} {kwh[m]:.0f}" for m in range(12)))
         else:
             print("WARNING: one bill without --month → every month assumed equal; "
@@ -120,7 +141,7 @@ def main():
     base = bills_for_size(pv1, load, 0, scale, a.offset)
     print("\nModel check, no solar (mean simulated ₱ vs your bill):")
     print("  " + "  ".join(f"{MONTHS[m]} {base[:, m].mean():,.0f}"
-                           + (f"/{pesos[m]:,.0f}" if pesos is not None else "")
+                           + (f"/{pesos[m]:,.0f}" if pesos is not None and not np.isnan(pesos[m]) else "")
                            for m in range(12)))
 
     rows = []

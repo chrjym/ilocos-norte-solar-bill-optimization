@@ -1,12 +1,14 @@
-Back-test on 1 bills from 1 household(s); tariff: INEC April 2026 (derived; Jan-2020 structure)
+Back-test on 2 bills from 1 household(s); tariff: INEC April 2026 (derived; Jan-2020 structure)
 
 A. Tariff test (no-solar bills): model ₱ from billed kWh vs real ₱
   household_01   Sep 2026:    464 kWh  real ₱5,739.45  model ₱5,445.88  error  5.1%  (real all-in ₱12.37/kWh)
-  MAPE 5.1% over 1 bills
+  household_01   Oct 2026:    509 kWh  real ₱6,295.52  model ₱5,973.49  error  5.1%  (real all-in ₱12.37/kWh)
+  MAPE 5.1% over 2 bills
 
 B. Net-metering test: which credit rule matches the real bill?
   (no net-metered bills — needs import_kwh and export_kwh)
   NOTE: the model starts each test month with no carried-over credit; bills showing a credit balance from earlier months are not comparable yet.
 
 C. Seasonal test: calibrate to one bill, predict other months' kWh
-  (needs a household with bills from ≥ 2 different months)
+  household_01: 2 bills, mean error 16.8%
+  MAPE 16.8% over 2 predictions

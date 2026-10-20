@@ -34,9 +34,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 .venv/bin/python -m src.convergence 5000 500      # Phase 7: convergence, CRN → results/
 .venv/bin/python -m src.simulation 2000           # size sweep + persistence ablation
 .venv/bin/python -m src.optimization --kwh 220 [--pesos 2600] [--aircon]   # Phase 8
-.venv/bin/python -m src.household --kwh 464 --pesos 5739.45 --month 9 --aircon --offset generation   # ONE bill (Sep 2026)
-.venv/bin/python -m src.monthly --kwh 464 --pesos 5739.45 --month 9 --aircon --kwp 4.5   # monthly bill with vs without solar
-.venv/bin/python -m src.persistence --kwh 464 --pesos 5739.45 --month 9 --aircon   # cloud persistence, this household
+.venv/bin/python -m src.household --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon --offset generation   # two bills (Sep + Oct 2026)
+.venv/bin/python -m src.monthly --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon --kwp 4.5   # monthly bill with vs without solar
+.venv/bin/python -m src.persistence --kwh 464 509 --pesos 5739.45 6295.52 --month 9 10 --aircon   # cloud persistence, this household
 .venv/bin/python -m src.sensitivity 512 200       # Phase 9: Sobol → results/
 .venv/bin/python -m src.backtest                  # Phase 10: data/bills/bills.csv vs model
 .venv/bin/python -m pytest tests -v               # verification & validation tests
@@ -44,10 +44,10 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 
 ## Household data
 
-One INEC bill is available: **September 2026, 464 kWh, ₱5,739.45 (₱12.3574/kWh)**, stored in
-`data/bills/bills.csv`. Result (generation-only export credit): **4.5 kWp**, about ₱51,000/yr saved,
-~4-year payback; 3.5–4.0 kWp if the hot September inflated the bill by ~15%. See project report §2.1 and §5.3
-for why only one month is used and what that limits.
+Two INEC bills are available: **September 2026, 464 kWh, ₱5,739.45** and **October 2026, 509 kWh,
+₱6,295.52** (both ₱12.3574/kWh), stored in `data/bills/bills.csv`. Result (generation-only export credit):
+**4.5 kWp**, about ₱55,000/yr saved, ~3.7-year payback; **5.0 kWp** if the worst months also matter
+(mean–CVaR). See project report §2.1 and §5.3 for why only two months are used and what that limits.
 
 ## Layout
 

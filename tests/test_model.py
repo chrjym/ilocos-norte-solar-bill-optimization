@@ -7,7 +7,8 @@ the same seed gives the same answer.
 
 VALIDATION — "is it the right model?"  The model's output agrees with the
 real world: 24 years of NASA POWER weather for Batac and the household's
-real September 2026 INEC bill (464 kWh, ₱5,739.45).
+real September 2026 INEC bill (464 kWh, ₱5,739.45); October 2026 (509 kWh,
+₱6,295.52) is in data/bills/bills.csv.
 
 Run from the project root:  .venv/bin/python -m pytest tests -v
 """
@@ -23,6 +24,7 @@ from src.validate_generator import acf, historical, monthly_means, synthetic
 
 N = 200          # Monte Carlo years: enough for the tolerances below, fast to run
 SEP_KWH, SEP_PESOS = 464.0, 5739.45
+OCT_KWH, OCT_PESOS = 509.0, 6295.52
 FIXED = tariff.FIXED_PER_MONTH * (1 + tariff.VAT)
 
 
@@ -155,6 +157,17 @@ class TestCalibration:
         # tariff scale makes the model reproduce the ₱ amount exactly
         bill = SEP_KWH * tariff.effective_rate() * scale + FIXED
         assert bill == pytest.approx(SEP_PESOS, abs=0.01)
+
+    def test_two_bill_calibration_hits_both_bills(self, scenarios):
+        _, load = scenarios
+        kwh12, scale = household_inputs(load, [SEP_KWH, OCT_KWH],
+                                        [SEP_PESOS, OCT_PESOS], month=[9, 10])
+        cal = calibrate_load(load, kwh12)
+        for m, kwh in ((9, SEP_KWH), (10, OCT_KWH)):
+            assert cal[:, day_months() == m].sum((1, 2)).mean() == pytest.approx(kwh, rel=1e-4)
+        # one tariff scale reproduces the ₱ total of both bills
+        bills = (SEP_KWH + OCT_KWH) * tariff.effective_rate() * scale + 2 * FIXED
+        assert bills == pytest.approx(SEP_PESOS + OCT_PESOS, abs=0.01)
 
 
 # ============================================================================
